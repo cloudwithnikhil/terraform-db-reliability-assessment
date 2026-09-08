@@ -341,23 +341,30 @@ The sample application uses the public `nginx:alpine` image as a placeholder bac
 
 # Part 6 — GitHub Actions
 
-The workflow at `.github/workflows/terraform.yml` runs on Terraform-related pull requests and pushes.
+The workflow at `.github/workflows/terraform.yml` runs on Terraform-related
+pull requests and pushes.
 
 It performs:
 
-```text
 terraform fmt -check
         |
-terraform init
+terraform init -backend=false
         |
 terraform validate
-        |
-terraform plan -refresh=false
-```
 
-The plan is uploaded as a workflow artifact.
+The workflow validates both the `dev` and `prod` Terraform configurations.
 
-Because this repository is designed for plan-only assessment review, the workflow does not run `terraform apply`.
+Terraform plan is intentionally not executed in CI because a plan requires
+AWS provider authentication and this assessment does not require an AWS
+deployment.
+
+For local plan validation, AWS credentials must be configured:
+
+cd infra/envs/dev
+terraform plan -refresh=false -var-file=dev.tfvars
+
+cd ../prod
+terraform plan -refresh=false -var-file=prod.tfvars
 
 ---
 
