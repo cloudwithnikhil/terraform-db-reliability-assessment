@@ -1,4 +1,4 @@
-aws_region = "eu-west-1"
+aws_region  = "eu-west-1"
 environment = "prod"
 name        = "booking-prod"
 
@@ -8,11 +8,11 @@ private_subnet_cidrs = ["10.20.11.0/24", "10.20.12.0/24"]
 
 single_nat_gateway = false
 
-container_image = "nginx:alpine"
-container_port  = 80
-task_cpu        = 512
-task_memory     = 1024
-desired_count   = 2
+container_image    = "nginx:alpine"
+container_port     = 80
+task_cpu           = 512
+task_memory        = 1024
+desired_count      = 2
 log_retention_days = 30
 
 rds_engine_version        = "16"

@@ -54,11 +54,11 @@ resource "aws_db_instance" "this" {
   vpc_security_group_ids = [aws_security_group.rds.id]
   publicly_accessible    = false
 
-  multi_az                  = var.multi_az
-  backup_retention_period   = var.backup_retention_days
-  deletion_protection      = var.deletion_protection
-  skip_final_snapshot       = var.skip_final_snapshot
-  copy_tags_to_snapshot     = true
+  multi_az                   = var.multi_az
+  backup_retention_period    = var.backup_retention_days
+  deletion_protection        = var.deletion_protection
+  skip_final_snapshot        = var.skip_final_snapshot
+  copy_tags_to_snapshot      = true
   auto_minor_version_upgrade = true
 
   backup_window      = "03:00-04:00"
