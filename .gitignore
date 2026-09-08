@@ -1,0 +1,31 @@
+# Terraform
+**/.terraform/
+**/*.tfstate
+**/*.tfstate.*
+*.tfplan
+*.tfplan.txt
+crash.log
+crash.*.log
+
+# Keep Terraform provider lock file in Git
+# .terraform.lock.hcl should NOT be ignored
+
+# Terraform local variables
+*.tfvars.local
+
+# Database backups only
+/backups/
+*.sql.gz
+*.dump
+
+# Local environment
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

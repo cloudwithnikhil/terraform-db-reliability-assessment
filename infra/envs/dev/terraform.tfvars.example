@@ -1,0 +1,28 @@
+aws_region = "eu-west-1"
+environment = "dev"
+name        = "booking-dev"
+
+vpc_cidr             = "10.10.0.0/16"
+public_subnet_cidrs  = ["10.10.1.0/24", "10.10.2.0/24"]
+private_subnet_cidrs = ["10.10.11.0/24", "10.10.12.0/24"]
+
+single_nat_gateway = true
+
+container_image = "nginx:alpine"
+container_port  = 80
+task_cpu        = 256
+task_memory     = 512
+desired_count   = 1
+log_retention_days = 7
+
+rds_engine_version        = "16"
+rds_instance_class        = "db.t4g.micro"
+rds_allocated_storage     = 20
+rds_max_allocated_storage = 50
+rds_db_name               = "appdb"
+rds_username              = "appadmin"
+rds_password              = "REPLACE-ME"
+rds_backup_retention_days = 3
+rds_deletion_protection   = false
+rds_multi_az              = false
+rds_skip_final_snapshot   = true

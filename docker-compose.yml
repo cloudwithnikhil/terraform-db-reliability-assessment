@@ -1,0 +1,31 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: assessment-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: bookings
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+      # Run database migration automatically on first initialization
+      - ./database/migrations/001_create_tables.sql:/docker-entrypoint-initdb.d/001_create_tables.sql:ro
+
+      # Load seed data automatically after migration
+      - ./database/seed/001_seed_data.sql:/docker-entrypoint-initdb.d/002_seed_data.sql:ro
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bookings"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
