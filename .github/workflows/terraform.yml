@@ -16,10 +16,6 @@ jobs:
     name: Terraform dev
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: infra/envs/dev
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -33,24 +29,22 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Terraform Init
+        working-directory: infra/envs/dev
         run: terraform init -backend=false -input=false
 
       - name: Terraform Validate
+        working-directory: infra/envs/dev
         run: terraform validate -no-color
 
       - name: Terraform Plan
+        working-directory: infra/envs/dev
         run: terraform plan -refresh=false -input=false -lock=false -var-file="dev.tfvars" -no-color
         continue-on-error: true
-
 
   terraform-prod:
     name: Terraform prod
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: infra/envs/prod
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -64,11 +58,14 @@ jobs:
         run: terraform fmt -check -recursive
 
       - name: Terraform Init
+        working-directory: infra/envs/prod
         run: terraform init -backend=false -input=false
 
       - name: Terraform Validate
+        working-directory: infra/envs/prod
         run: terraform validate -no-color
 
       - name: Terraform Plan
+        working-directory: infra/envs/prod
         run: terraform plan -refresh=false -input=false -lock=false -var-file="prod.tfvars" -no-color
         continue-on-error: true
