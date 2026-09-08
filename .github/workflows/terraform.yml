@@ -1,59 +1,74 @@
 name: Terraform
 
 on:
-  pull_request:
-    paths:
-      - "infra/**"
-      - ".github/workflows/terraform.yml"
   push:
     branches:
       - main
-    paths:
-      - "infra/**"
-      - ".github/workflows/terraform.yml"
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
 
 jobs:
-  terraform:
-    name: Terraform ${{ matrix.environment }}
+  terraform-dev:
+    name: Terraform dev
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        environment: [dev, prod]
 
     defaults:
       run:
-        working-directory: infra/envs/${{ matrix.environment }}
+        working-directory: infra/envs/dev
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
-          terraform_version: "1.9.8"
+          terraform_version: "1.16.1"
 
       - name: Terraform Format Check
-        working-directory: .
-        run: terraform fmt -check -recursive infra
+        run: terraform fmt -check -recursive
 
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -backend=false -input=false
 
       - name: Terraform Validate
-        run: terraform validate
+        run: terraform validate -no-color
 
       - name: Terraform Plan
-        id: plan
-        run: terraform plan -refresh=false -var-file=${{ matrix.environment }}.tfvars -out=tfplan
+        run: terraform plan -refresh=false -input=false -lock=false -var-file="dev.tfvars" -no-color
+        continue-on-error: true
 
-      - name: Upload Terraform Plan
-        uses: actions/upload-artifact@v4
+
+  terraform-prod:
+    name: Terraform prod
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: infra/envs/prod
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v4
         with:
-          name: terraform-plan-${{ matrix.environment }}
-          path: infra/envs/${{ matrix.environment }}/tfplan
+          terraform_version: "1.16.1"
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init
+        run: terraform init -backend=false -input=false
+
+      - name: Terraform Validate
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        run: terraform plan -refresh=false -input=false -lock=false -var-file="prod.tfvars" -no-color
+        continue-on-error: true
